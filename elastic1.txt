@@ -1,0 +1,87 @@
+PUT /coffee
+{
+  "mappings": {
+    "dynamic_templates": [{
+      "keyword": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+      }
+    }
+    ],
+    "properties": {
+      "brand_id": {
+        "type":"short",
+        "doc_values": false
+      },
+      "brand": {
+        "type":"keyword"
+      },
+      "country": {
+        "type": "text",
+        "index": "false"
+      },
+      "quantity_sold": {
+        "type":"float"
+      },
+      "purchase_date": {
+        "type":"date"
+      }
+    }
+  }
+}
+
+#
+#
+#
+запрос возвращает доки где количество проданного кофе с 2022-01-11 по 2022-05-17 находтися в диапозоне от 1111 до 5555
+GET coffee/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "quantity_sold": {
+              "gte": 1111,
+              "lte": 5555
+            }
+          }
+        }
+      ],
+      "filter": [
+        {
+        "range": {
+            "purchase_date": {
+              "gte": "2022-01-11",
+              "lt": "2022-05-17"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+#
+#
+#
+среднее количество проданного кофе по маркам
+GET coffee/_search
+{
+  "size": 0, 
+  "aggs": {
+    "brand_name": {
+      "terms": {
+        "field": "brand"
+      },
+      "aggs": {
+        "avg_quantity_sold": {
+          "avg": {
+            "field": "quantity_sold"
+          }
+        }
+      }
+    }
+  }
+}
