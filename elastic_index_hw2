@@ -1,0 +1,30 @@
+PUT elasticsearch_cluster
+{
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 1
+  }
+}
+PUT /elasticsearch_cluster/_doc/1
+{
+  "region": "us-central1-a",
+  "name": "es01",
+  "node":"master eligible, data, ingest",
+  "is_master": false
+}
+
+PUT /elasticsearch_cluster/_doc/2
+{
+  "region": "us-central1-b",
+  "name": "es02",
+  "node":"master eligible, data, ingest",
+  "is_master": true
+}
+
+PUT /elasticsearch_cluster/_doc/3
+{
+  "region": "us-central1-c",
+  "name": "es03",
+  "node":"master eligible",
+  "is_master": false
+}
